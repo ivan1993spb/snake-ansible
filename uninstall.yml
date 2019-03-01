@@ -1,0 +1,38 @@
+---
+
+- hosts: all
+  become: True
+
+  vars:
+    systemd_unit_directory: {
+      "Debian": "/lib/systemd/system",
+      "Ubuntu": "/lib/systemd/system",
+      "CentOS": "/usr/lib/systemd/system",
+    }
+
+  tasks:
+
+    - name: Stop and disable snake-server systemd service
+      service:
+        name: snake-server
+        state: stopped
+        enabled: no
+
+    - name: Delete systemd snake-server unit file
+      file:
+        path: "{{ systemd_unit_directory[ansible_distribution] }}/snake-server.service"
+        state: absent
+
+    - name: Reload systemd
+      service:
+        daemon_reload: yes
+
+    - name: Delete snake-server binary
+      file:
+        path: "{{ snake_install_path }}/{{ snake_binary_name }}"
+        state: absent
+
+    - name: Delete snake user
+      user:
+        name: "{{ snake_user }}"
+        state: absent

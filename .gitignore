@@ -1,0 +1,10 @@
+*.retry
+*.swp
+
+.env
+.venv
+env
+venv
+
+inventories
+group_vars/all.yml

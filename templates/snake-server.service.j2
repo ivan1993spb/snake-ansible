@@ -1,0 +1,25 @@
+[Unit]
+Description=Snake-Server
+
+[Service]
+LimitNOFILE=200000
+Type=simple
+
+User={{ snake_user }}
+Group={{ snake_user }}
+
+TimeoutStopSec=20
+
+{% if snake_gctrace_enable %}
+Environment=GODEBUG=gctrace=1
+{% endif %}
+
+ExecStart={{ snake_install_path }}/{{ snake_binary_name }} -address {{ snake_options.address }} -conns-limit {{ snake_options.conns_limit }} -groups-limit {{ snake_options.groups_limit }} {{ '-enable-broadcast' if snake_options.enable_broadcast else ''  }} {{ '-enable-web' if snake_options.enable_web else '' }} {{ '-log-json' if snake_options.log_json else '' }} -log-level {{ snake_options.log_level }} {{ '-tls-enable' if snake_options.tls_enable else '' }} -tls-cert {{ snake_options.tls_cert }} -tls-key {{ snake_options.tls_key }}
+
+Restart=always
+RestartSec=3
+
+TimeoutSec=20
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,58 @@
+---
+
+- hosts: all
+  become: True
+
+  vars:
+    systemd_unit_directory: {
+      "Debian": "/lib/systemd/system",
+      "Ubuntu": "/lib/systemd/system",
+      "CentOS": "/usr/lib/systemd/system",
+    }
+
+  tasks:
+
+    - name: Add snake user
+      user:
+        name: "{{ snake_user }}"
+        create_home: no
+
+    - name: Create temp directory
+      tempfile:
+        state: directory
+        prefix: snake
+      register: tempfile_result
+
+    - name: Download and unarchive snake-server binary
+      unarchive:
+        src: "{{ snake_archive_url }}"
+        dest: "{{ tempfile_result.path }}"
+        remote_src: yes
+        list_files: yes
+      register: unarchive_result
+
+    - name: "Unzipped files in {{ tempfile_result.path }}"
+      debug:
+        var: unarchive_result.files
+
+    - name: Copy snake-server binary
+      command: "cp {{ tempfile_result.path }}/{{ unarchive_result.files | first }} {{ snake_install_path }}/{{ snake_binary_name }}"
+
+    - name: Check binary snake-server
+      file:
+        name: "{{ snake_install_path }}/{{ snake_binary_name }}"
+        state: file
+        mode: 0755
+
+    - name: Create systemd snake-server unit file
+      template:
+        src: snake-server.service.j2
+        dest: "{{ systemd_unit_directory[ansible_distribution] }}/snake-server.service"
+        mode: 0644
+
+    - name: Enable and start (restart) snake-server service
+      service:
+        name: snake-server
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
