@@ -33,6 +33,12 @@ ansible-playbook -i inventories install.yml
 
 Use flags `-K`, `-k`, `-u` to control access.
 
+## Update
+
+```
+ansible-playbook -i inventories update.yml
+```
+
 ## Uninstall
 
 ```
