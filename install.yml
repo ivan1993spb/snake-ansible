@@ -16,6 +16,7 @@
       user:
         name: "{{ snake_user }}"
         create_home: no
+        system: yes
 
     - name: Create temp directory
       tempfile:
