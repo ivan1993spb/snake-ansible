@@ -1,0 +1,40 @@
+---
+
+- hosts: all
+  become: True
+
+  tasks:
+
+    - name: Create temp directory
+      tempfile:
+        state: directory
+        prefix: snake
+      register: tempfile_result
+
+    - name: Download and unarchive snake-server binary
+      unarchive:
+        src: "{{ snake_archive_url }}"
+        dest: "{{ tempfile_result.path }}"
+        remote_src: yes
+        list_files: yes
+      register: unarchive_result
+
+    - name: Stop snake-server systemd service
+      service:
+        name: snake-server
+        state: stopped
+
+    - name: Copy new snake-server binary
+      command: "cp {{ tempfile_result.path }}/{{ unarchive_result.files | first }} {{ snake_install_path }}/{{ snake_binary_name }}"
+
+    - name: Check binary snake-server
+      file:
+        name: "{{ snake_install_path }}/{{ snake_binary_name }}"
+        state: file
+        mode: 0755
+
+    - name: Enable and start snake-server service
+      service:
+        name: snake-server
+        state: restarted
+        enabled: yes
