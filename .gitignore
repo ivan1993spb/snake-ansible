@@ -8,3 +8,5 @@ venv
 
 inventories
 group_vars/all.yml
+
+*.patch
