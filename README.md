@@ -1,15 +1,15 @@
 
 # Snake-Ansible
 
-Ansible playbook to install Snake-Server. See Snake-Server source code here: https://github.com/ivan1993spb/snake-server
+Ansible playbook to install the Snake-Server. See the Snake-Server source code here: https://github.com/ivan1993spb/snake-server
 
 ## Presettings
 
-1. Check whether you have python 2.7 and pip
-2. Clone the repository
+1. Check if you have Python and pip
+2. Clone this repository
 3. Initialize virtual environment and install dependencies:
     ```bash
-    virtualenv -p python2 .venv
+    python3 -m venv .venv
     source .venv/bin/activate
     pip install -r requirements.txt
     ```

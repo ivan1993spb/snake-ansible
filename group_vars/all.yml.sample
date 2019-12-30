@@ -1,12 +1,14 @@
 ---
 
-snake_version: v4.1.1
+snake_version: v4.2.2
 snake_platform: linux
-snake_architecture: 386
+snake_architecture: amd64
 
 snake_archive_url: https://github.com/ivan1993spb/snake-server/releases/download/{{ snake_version }}/snake-server-{{ snake_version }}-{{ snake_platform }}-{{ snake_architecture }}.tar.gz
 
 snake_user: snake
+
+snake_systemd_service_name: snake-server
 
 snake_install_path: /usr/local/bin
 snake_binary_name: snake-server

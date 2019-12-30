@@ -12,19 +12,19 @@
 
   tasks:
 
-    - name: Add snake user
+    - name: Add a snake user
       user:
         name: "{{ snake_user }}"
         create_home: no
         system: yes
 
-    - name: Create temp directory
+    - name: Create a temp directory
       tempfile:
         state: directory
         prefix: snake
       register: tempfile_result
 
-    - name: Download and unarchive snake-server binary
+    - name: Download and unarchive the Snake-Server binary
       unarchive:
         src: "{{ snake_archive_url }}"
         dest: "{{ tempfile_result.path }}"
@@ -36,24 +36,24 @@
       debug:
         var: unarchive_result.files
 
-    - name: Copy snake-server binary
+    - name: Copy the Snake-Server's binary
       command: "cp {{ tempfile_result.path }}/{{ unarchive_result.files | first }} {{ snake_install_path }}/{{ snake_binary_name }}"
 
-    - name: Check binary snake-server
+    - name: Set up proper mode for the binary file
       file:
         name: "{{ snake_install_path }}/{{ snake_binary_name }}"
         state: file
         mode: 0755
 
-    - name: Create systemd snake-server unit file
+    - name: Create systemd unit file for the Snake-Server
       template:
         src: snake-server.service.j2
-        dest: "{{ systemd_unit_directory[ansible_distribution] }}/snake-server.service"
+        dest: "{{ systemd_unit_directory[ansible_distribution] }}/{{ snake_systemd_service_name }}.service"
         mode: 0644
 
-    - name: Enable and start (restart) snake-server service
+    - name: Enable and start (restart) the Snake-Server systemd service
       service:
-        name: snake-server
+        name: "{{ snake_systemd_service_name }}"
         state: restarted
         daemon_reload: yes
         enabled: yes

@@ -12,27 +12,27 @@
 
   tasks:
 
-    - name: Stop and disable snake-server systemd service
+    - name: Stop and disable the Snake-Server systemd service
       service:
-        name: snake-server
+        name: "{{ snake_systemd_service_name }}"
         state: stopped
         enabled: no
 
-    - name: Delete systemd snake-server unit file
+    - name: Delete systemd the Snake-Server's unit file
       file:
         path: "{{ systemd_unit_directory[ansible_distribution] }}/snake-server.service"
         state: absent
 
-    - name: Reload systemd
+    - name: Reload systemd daemon
       service:
         daemon_reload: yes
 
-    - name: Delete snake-server binary
+    - name: Delete the Snake-Server's binary
       file:
         path: "{{ snake_install_path }}/{{ snake_binary_name }}"
         state: absent
 
-    - name: Delete snake user
+    - name: Delete the snake user
       user:
         name: "{{ snake_user }}"
         state: absent
